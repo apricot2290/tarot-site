@@ -3,270 +3,385 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>灵镜塔罗 | 星辰塔罗师</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>杏子塔罗 | 杏子塔罗师</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg-primary:#f0f7f4;--bg-secondary:#e8f1ed;--bg-card:#ffffff;--text-primary:#2d3748;--text-secondary:#6b7c8a;--accent-green:#6bb89a;--accent-blue:#7fc1d9;--font-main:'Georgia','Noto Serif SC',serif;--font-sans:'PingFang SC','Hiragino Sans GB',sans-serif}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-main);background:var(--bg-primary);color:var(--text-primary);line-height:1.8;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+#floating{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.floating-el{position:absolute;font-size:1.4rem;opacity:0.12;animation:floatUp linear infinite}
+@keyframes floatUp{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:0.12}90%{opacity:0.12}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(240,247,244,0.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(107,184,154,0.15);transition:all 0.3s}
+.navbar.scrolled{background:rgba(240,247,244,0.96);box-shadow:0 4px 30px rgba(107,184,154,0.08)}
+.nav-container{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:64px}
+.nav-logo{font-size:1.2rem;color:var(--accent-green);letter-spacing:2px}
+.nav-menu{display:flex;list-style:none;gap:32px}
+.nav-menu a{font-family:var(--font-sans);font-size:0.9rem;color:var(--text-secondary);transition:color 0.3s;position:relative}
+.nav-menu a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--accent-green);transition:width 0.3s}
+.nav-menu a:hover{color:var(--accent-green)}
+.nav-menu a:hover::after{width:100%}
+.nav-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.nav-toggle span{display:block;width:24px;height:2px;background:var(--accent-green);border-radius:2px;transition:all 0.3s}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;z-index:1;padding:80px 24px;background:linear-gradient(180deg,#f0f7f4 0%,#e8f1ed 50%,#f0f7f4 100%)}
+.hero-content{max-width:700px}
+.hero-card{width:120px;height:180px;margin:0 auto 40px;perspective:600px;cursor:pointer}
+.card-inner{position:relative;width:100%;height:100%;transition:transform 0.8s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d}
+.hero-card:hover .card-inner{transform:rotateY(180deg)}
+.card-front,.card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.card-front{background:linear-gradient(135deg,#6bb89a,#7fc1d9);border:2px solid rgba(255,255,255,0.3)}
+.card-symbol{font-size:3rem;color:#fff}
+.card-back{background:linear-gradient(135deg,#7fc1d9,#6bb89a);transform:rotateY(180deg);padding:16px;font-size:0.85rem;color:#fff;line-height:1.6;border:2px solid rgba(255,255,255,0.3)}
+.hero h1{font-size:3.5rem;color:var(--accent-green);letter-spacing:6px;margin-bottom:16px}
+.hero-subtitle{font-size:1.1rem;color:var(--text-secondary);margin-bottom:40px;letter-spacing:2px}
+.btn-glow{display:inline-block;padding:14px 48px;border:1px solid var(--accent-green);color:var(--accent-green);font-family:var(--font-sans);font-size:0.9rem;letter-spacing:3px;transition:all 0.4s;position:relative;overflow:hidden;border-radius:30px}
+.btn-glow::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(107,184,154,0.08),transparent);transition:left 0.6s}
+.btn-glow:hover{background:rgba(107,184,154,0.06);box-shadow:0 0 30px rgba(107,184,154,0.15)}
+.btn-glow:hover::before{left:100%}
+.section{padding:100px 0;position:relative;z-index:1;opacity:0;transform:translateY(30px);transition:opacity 0.8s ease,transform 0.8s ease}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-alt{background:var(--bg-secondary)}
+.section-title{text-align:center;font-size:2rem;color:var(--accent-green);letter-spacing:4px;margin-bottom:60px;font-weight:normal}
+.title-deco{color:var(--accent-blue);font-size:1.2rem;opacity:0.6;margin:0 8px}
+.about-content{display:grid;grid-template-columns:1fr 300px;gap:60px;align-items:center}
+.about-text p{color:var(--text-secondary);margin-bottom:20px;font-size:1rem;line-height:2}
+.about-stats{display:flex;gap:40px;margin-top:36px}
+.stat{text-align:center}
+.stat-num{display:block;font-size:1.8rem;color:var(--accent-green);letter-spacing:2px}
+.stat-label{font-family:var(--font-sans);font-size:0.8rem;color:var(--text-secondary);margin-top:4px}
+.avatar-frame{width:280px;height:280px;border-radius:50%;border:2px solid var(--accent-green);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:linear-gradient(135deg,#e8f5ef,#e0eff5)}
+.avatar-frame::before{content:'';position:absolute;inset:-50%;background:conic-gradient(transparent,rgba(107,184,154,0.12),transparent,rgba(127,193,217,0.12),transparent);animation:spin 8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.avatar-placeholder{position:relative;z-index:1;font-size:4rem;color:var(--accent-green);background:var(--bg-primary);width:260px;height:260px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.service-card{background:var(--bg-card);border:1px solid rgba(107,184,154,0.1);border-radius:16px;padding:36px 28px;transition:all 0.4s;position:relative;overflow:hidden}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent-green),var(--accent-blue),transparent);transform:scaleX(0);transition:transform 0.4s}
+.service-card:hover{border-color:rgba(107,184,154,0.2);transform:translateY(-4px);box-shadow:0 20px 60px rgba(107,184,154,0.08)}
+.service-card:hover::before{transform:scaleX(1)}
+.service-icon{font-size:2.5rem;margin-bottom:16px}
+.service-card h3{color:var(--accent-green);font-size:1.2rem;margin-bottom:12px;letter-spacing:1px}
+.service-card p{color:var(--text-secondary);font-size:0.9rem;line-height:1.8;margin-bottom:20px}
+.service-footer{display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:1px solid rgba(107,184,154,0.08)}
+.service-price{font-size:1.3rem;color:var(--accent-blue);letter-spacing:1px}
+.service-duration{font-family:var(--font-sans);font-size:0.8rem;color:var(--text-secondary)}
+.testimonials-slider{max-width:600px;margin:0 auto;position:relative}
+.testimonial-card{text-align:center;display:none;animation:fadeIn 0.5s ease}
+.testimonial-card.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.testimonial-stars{color:var(--accent-green);font-size:1.5rem;letter-spacing:4px;margin-bottom:24px}
+.testimonial-text{color:var(--text-primary);font-size:1.1rem;line-height:2;margin-bottom:24px;font-style:italic}
+.testimonial-author{display:flex;flex-direction:column;gap:4px}
+.author-name{color:var(--accent-green);font-size:1rem}
+.author-title{font-family:var(--font-sans);font-size:0.8rem;color:var(--text-secondary)}
+.slider-controls{display:flex;justify-content:center;gap:12px;margin-top:36px}
+.slider-btn{width:10px;height:10px;border-radius:50%;border:1px solid var(--text-secondary);background:transparent;cursor:pointer;transition:all 0.3s}
+.slider-btn.active{background:var(--accent-green);border-color:var(--accent-green)}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.blog-card{background:var(--bg-card);border-radius:16px;overflow:hidden;border:1px solid rgba(107,184,154,0.08);transition:all 0.4s}
+.blog-card:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(107,184,154,0.08);border-color:rgba(107,184,154,0.2)}
+.blog-image{height:200px;overflow:hidden}
+.blog-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;background:linear-gradient(135deg,#e8f5ef,#e0eff5)}
+.blog-body{padding:24px}
+.blog-date{font-family:var(--font-sans);font-size:0.8rem;color:var(--accent-blue);opacity:0.8}
+.blog-body h3{color:var(--text-primary);font-size:1.1rem;margin:8px 0 12px;line-height:1.6}
+.blog-body p{color:var(--text-secondary);font-size:0.9rem;line-height:1.8;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.blog-link{color:var(--accent-green);font-family:var(--font-sans);font-size:0.85rem;transition:opacity 0.3s}
+.blog-link:hover{opacity:0.7}
+.contact-content{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.contact-info{display:flex;flex-direction:column;gap:28px}
+.contact-item{display:flex;align-items:center;gap:16px}
+.contact-icon{font-size:1.5rem;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border-radius:12px;border:1px solid rgba(107,184,154,0.1)}
+.contact-item h4{color:var(--accent-green);font-size:0.95rem;margin-bottom:2px}
+.contact-item p{font-family:var(--font-sans);color:var(--text-secondary);font-size:0.9rem}
+.contact-cta{display:flex;justify-content:center}
+.cta-card{background:var(--bg-card);border:1px solid rgba(107,184,154,0.12);border-radius:16px;padding:40px;text-align:center;max-width:320px;width:100%}
+.cta-card p{color:var(--text-secondary);line-height:1.8;margin-bottom:24px}
+.cta-qr-placeholder{width:180px;height:180px;margin:0 auto 24px;border:2px dashed rgba(107,184,154,0.3);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--accent-green);opacity:0.6;font-family:var(--font-sans);font-size:0.9rem}
+.cta-note{color:var(--accent-blue)!important;font-family:var(--font-sans);font-size:0.85rem}
+.footer{padding:60px 0;text-align:center;border-top:1px solid rgba(107,184,154,0.1);position:relative;z-index:1}
+.footer-brand{color:var(--accent-green);font-size:1.1rem;letter-spacing:3px;margin-bottom:12px}
+.footer-quote{color:var(--text-secondary);font-style:italic;margin-bottom:20px;font-size:0.95rem}
+.footer-copy{font-family:var(--font-sans);color:var(--text-secondary);font-size:0.8rem;opacity:0.6}
+@media(max-width:768px){
+.hero h1{font-size:2.2rem}
+.nav-menu{position:fixed;top:64px;left:0;right:0;background:rgba(240,247,244,0.98);flex-direction:column;align-items:center;padding:24px;gap:20px;transform:translateY(-100%);opacity:0;transition:all 0.3s;pointer-events:none;border-bottom:1px solid rgba(107,184,154,0.15)}
+.nav-menu.active{transform:translateY(0);opacity:1;pointer-events:auto}
+.nav-toggle{display:flex}
+.nav-toggle.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.nav-toggle.active span:nth-child(2){opacity:0}
+.nav-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.about-content{grid-template-columns:1fr;text-align:center}
+.about-stats{justify-content:center}
+.avatar-frame{margin:0 auto;width:200px;height:200px}
+.avatar-placeholder{width:182px;height:182px;font-size:3rem}
+.contact-content{grid-template-columns:1fr}
+.section-title{font-size:1.5rem}
+.services-grid,.blog-grid{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 
-  <!-- 星空背景 -->
-  <div id="stars"></div>
+<div id="floating"></div>
 
-  <!-- 导航 -->
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="#" class="nav-logo">✦ 灵镜塔罗</a>
-      <button class="nav-toggle" aria-label="菜单">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-menu">
-        <li><a href="#about">关于我</a></li>
-        <li><a href="#services">服务</a></li>
-        <li><a href="#testimonials">评价</a></li>
-        <li><a href="#blog">文章</a></li>
-        <li><a href="#contact">联系</a></li>
-      </ul>
-    </div>
-  </nav>
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="#" class="nav-logo">✦ 杏子塔罗</a>
+    <button class="nav-toggle" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-menu">
+      <li><a href="#about">关于我</a></li>
+      <li><a href="#services">服务</a></li>
+      <li><a href="#testimonials">评价</a></li>
+      <li><a href="#blog">文章</a></li>
+      <li><a href="#contact">联系</a></li>
+    </ul>
+  </div>
+</nav>
 
-  <!-- Hero -->
-  <section class="hero" id="hero">
-    <div class="hero-content">
-      <div class="hero-card">
-        <div class="card-inner">
-          <div class="card-front">
-            <div class="card-symbol">☽</div>
-          </div>
-          <div class="card-back">
-            <p>指引你找到内心的答案</p>
-          </div>
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-card">
+      <div class="card-inner">
+        <div class="card-front">
+          <div class="card-symbol">☽</div>
         </div>
-      </div>
-      <h1>灵镜塔罗</h1>
-      <p class="hero-subtitle">在星辰与符号之间，探寻你的人生轨迹</p>
-      <a href="#services" class="btn-glow">探索服务</a>
-    </div>
-  </section>
-
-  <!-- 关于我 -->
-  <section class="section" id="about">
-    <div class="container">
-      <h2 class="section-title"><span class="title-deco">◈</span> 关于我 <span class="title-deco">◈</span></h2>
-      <div class="about-content">
-        <div class="about-text">
-          <p>你好，我是星辰。<br>
-          一名从业六年的塔罗师、神秘学研习者。</p>
-          <p>我相信塔罗牌不是预言未来的工具，而是映照内心的镜子。每一张牌都是一扇门，通向你自己未曾察觉的智慧与力量。</p>
-          <p>多年来，我已为超过 3000 位来访者提供塔罗咨询，帮助他们看清感情、事业、人生的方向。我的风格温和而直接，不说你爱听的，只说真相。</p>
-          <div class="about-stats">
-            <div class="stat">
-              <span class="stat-num">6+</span>
-              <span class="stat-label">年经验</span>
-            </div>
-            <div class="stat">
-              <span class="stat-num">3000+</span>
-              <span class="stat-label">服务人次</span>
-            </div>
-            <div class="stat">
-              <span class="stat-num">99%</span>
-              <span class="stat-label">好评率</span>
-            </div>
-          </div>
-        </div>
-        <div class="about-avatar">
-          <div class="avatar-frame">
-            <div class="avatar-placeholder">☽</div>
-          </div>
+        <div class="card-back">
+          <p>指引你找到内心的答案</p>
         </div>
       </div>
     </div>
-  </section>
+    <h1>杏子塔罗</h1>
+    <p class="hero-subtitle">在星辰与符号之间，探寻你的人生轨迹</p>
+    <a href="#services" class="btn-glow">探索服务</a>
+  </div>
+</section>
 
-  <!-- 服务 -->
-  <section class="section section-dark" id="services">
-    <div class="container">
-      <h2 class="section-title"><span class="title-deco">◈</span> 服务项目 <span class="title-deco">◈</span></h2>
-      <div class="services-grid">
-        <div class="service-card">
-          <div class="service-icon">🃏</div>
-          <h3>全面占卜</h3>
-          <p>事业、感情、财运、学业全方位解读。使用经典韦特塔罗，深入剖析你当下的困惑。</p>
-          <div class="service-footer">
-            <span class="service-price">¥198</span>
-            <span class="service-duration">约 45 分钟</span>
+<section class="section" id="about">
+  <div class="container">
+    <h2 class="section-title"><span class="title-deco">◈</span> 关于我 <span class="title-deco">◈</span></h2>
+    <div class="about-content">
+      <div class="about-text">
+        <p>你好，我是杏子。<br>一名从业六年的塔罗师、神秘学研习者。</p>
+        <p>我相信塔罗牌不是预言未来的工具，而是映照内心的镜子。每一张牌都是一扇门，通向你自己未曾察觉的智慧与力量。</p>
+        <p>多年来，我已为超过 3000 位来访者提供塔罗咨询，帮助他们看清感情、事业、人生的方向。我的风格温和而直接，不说你爱听的，只说真相。</p>
+        <div class="about-stats">
+          <div class="stat">
+            <span class="stat-num">6+</span>
+            <span class="stat-label">年经验</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">3000+</span>
+            <span class="stat-label">服务人次</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">99%</span>
+            <span class="stat-label">好评率</span>
           </div>
         </div>
-        <div class="service-card">
-          <div class="service-icon">❤️</div>
-          <h3>感情专询</h3>
-          <p>聚焦感情问题：桃花运、复合可能、关系走向、相处建议。帮你理清情感的迷雾。</p>
-          <div class="service-footer">
-            <span class="service-price">¥258</span>
-            <span class="service-duration">约 60 分钟</span>
-          </div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">💼</div>
-          <h3>事业指引</h3>
-          <p>职业选择、跳槽时机、创业前景、职场人际关系。看清事业路上的关键节点。</p>
-          <div class="service-footer">
-            <span class="service-price">¥258</span>
-            <span class="service-duration">约 60 分钟</span>
-          </div>
-        </div>
-        <div class="service-card">
-          <div class="service-icon">🌙</div>
-          <h3>年度流年</h3>
-          <p>全年运势解读，逐月分析。把握四季的能量变化，提前布局你的一年。</p>
-          <div class="service-footer">
-            <span class="service-price">¥688</span>
-            <span class="service-duration">含年度报告</span>
-          </div>
+      </div>
+      <div class="about-avatar">
+        <div class="avatar-frame">
+          <div class="avatar-placeholder">☽</div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- 评价 -->
-  <section class="section" id="testimonials">
-    <div class="container">
-      <h2 class="section-title"><span class="title-deco">◈</span> 来访者说 <span class="title-deco">◈</span></h2>
-      <div class="testimonials-slider">
-        <div class="testimonial-card active">
-          <div class="testimonial-stars">★★★★★</div>
-          <p class="testimonial-text">"第一次接触塔罗，星辰解读得非常详细，不是那种模棱两可的话，每一点都能对应到我实际的情况。感觉被看透了，很震撼。"</p>
-          <div class="testimonial-author">
-            <span class="author-name">小雅</span>
-            <span class="author-title">深圳 · 产品经理</span>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-stars">★★★★★</div>
-          <p class="testimonial-text">"做感情咨询的时候哭了，不是因为难过，而是因为终于有人说出了我一直在逃避的事实。星辰的专业和温柔让我很安心。"</p>
-          <div class="testimonial-author">
-            <span class="author-name">阿宁</span>
-            <span class="author-title">上海 · 自由职业</span>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-stars">★★★★★</div>
-          <p class="testimonial-text">"每年都找星辰看流年运势，每次都很准。去年说我会在秋季遇到重要的转变，果然换了工作，一切都对上了。"</p>
-          <div class="testimonial-author">
-            <span class="author-name">Maggie</span>
-            <span class="author-title">北京 · 设计师</span>
-          </div>
+<section class="section section-alt" id="services">
+  <div class="container">
+    <h2 class="section-title"><span class="title-deco">◈</span> 服务项目 <span class="title-deco">◈</span></h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🃏</div>
+        <h3>全面占卜</h3>
+        <p>事业、感情、财运、学业全方位解读。使用经典韦特塔罗，深入剖析你当下的困惑。</p>
+        <div class="service-footer">
+          <span class="service-price">¥198</span>
+          <span class="service-duration">约 45 分钟</span>
         </div>
       </div>
-      <div class="slider-controls">
-        <button class="slider-btn active" data-index="0"></button>
-        <button class="slider-btn" data-index="1"></button>
-        <button class="slider-btn" data-index="2"></button>
-      </div>
-    </div>
-  </section>
-
-  <!-- 文章 -->
-  <section class="section section-dark" id="blog">
-    <div class="container">
-      <h2 class="section-title"><span class="title-deco">◈</span> 塔罗随笔 <span class="title-deco">◈</span></h2>
-      <div class="blog-grid">
-        <article class="blog-card">
-          <div class="blog-image">
-            <div class="blog-img-placeholder">🃏</div>
-          </div>
-          <div class="blog-body">
-            <span class="blog-date">2026.05.15</span>
-            <h3>愚人之旅：从零开始的勇气</h3>
-            <p>愚人牌是塔罗大阿尔卡纳的第一张牌，也是编号为0的一张。零代表着无限可能，代表着尚未被定义的状态...</p>
-            <a href="#" class="blog-link">阅读更多 →</a>
-          </div>
-        </article>
-        <article class="blog-card">
-          <div class="blog-image">
-            <div class="blog-img-placeholder">🌙</div>
-          </div>
-          <div class="blog-body">
-            <span class="blog-date">2026.04.28</span>
-            <h3>女祭司：聆听内心的声音</h3>
-            <p>女祭司这张牌常常出现在我们需要向内看的时刻。她提醒我们，所有的答案都已经在你心里...</p>
-            <a href="#" class="blog-link">阅读更多 →</a>
-          </div>
-        </article>
-        <article class="blog-card">
-          <div class="blog-image">
-            <div class="blog-img-placeholder">✨</div>
-          </div>
-          <div class="blog-body">
-            <span class="blog-date">2026.04.10</span>
-            <h3>如何为塔罗解读做准备？</h3>
-            <p>很多人第一次塔罗占卜时会紧张，不知道该怎么问问题。其实好的问题比好的牌阵更重要...</p>
-            <a href="#" class="blog-link">阅读更多 →</a>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- 联系 -->
-  <section class="section" id="contact">
-    <div class="container">
-      <h2 class="section-title"><span class="title-deco">◈</span> 联系我 <span class="title-deco">◈</span></h2>
-      <div class="contact-content">
-        <div class="contact-info">
-          <div class="contact-item">
-            <span class="contact-icon">📱</span>
-            <div>
-              <h4>微信</h4>
-              <p>Tarot_Star_2026</p>
-            </div>
-          </div>
-          <div class="contact-item">
-            <span class="contact-icon">📧</span>
-            <div>
-              <h4>邮箱</h4>
-              <p>star@lingjingtarot.com</p>
-            </div>
-          </div>
-          <div class="contact-item">
-            <span class="contact-icon">📱</span>
-            <div>
-              <h4>小红书</h4>
-              <p>@灵镜塔罗</p>
-            </div>
-          </div>
-          <div class="contact-item">
-            <span class="contact-icon">⏰</span>
-            <div>
-              <h4>在线时间</h4>
-              <p>每日 10:00 - 22:00</p>
-            </div>
-          </div>
+      <div class="service-card">
+        <div class="service-icon">❤️</div>
+        <h3>感情专询</h3>
+        <p>聚焦感情问题：桃花运、复合可能、关系走向、相处建议。帮你理清情感的迷雾。</p>
+        <div class="service-footer">
+          <span class="service-price">¥258</span>
+          <span class="service-duration">约 60 分钟</span>
         </div>
-        <div class="contact-cta">
-          <div class="cta-card">
-            <p>预约占卜请加微信<br>备注"塔罗咨询"</p>
-            <div class="cta-qr-placeholder">
-              <span>✦</span>
-              <span>微信二维码</span>
-              <span>✦</span>
-            </div>
-            <p class="cta-note">首次咨询享 8 折优惠</p>
-          </div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💼</div>
+        <h3>事业指引</h3>
+        <p>职业选择、跳槽时机、创业前景、职场人际关系。看清事业路上的关键节点。</p>
+        <div class="service-footer">
+          <span class="service-price">¥258</span>
+          <span class="service-duration">约 60 分钟</span>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🌙</div>
+        <h3>年度流年</h3>
+        <p>全年运势解读，逐月分析。把握四季的能量变化，提前布局你的一年。</p>
+        <div class="service-footer">
+          <span class="service-price">¥688</span>
+          <span class="service-duration">含年度报告</span>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <p class="footer-brand">✦ 灵镜塔罗</p>
-        <p class="footer-quote">"牌是镜子，答案在你心中"</p>
-        <p class="footer-copy">© 2026 灵镜塔罗 · 用心照亮每一个迷茫的灵魂</p>
+<section class="section" id="testimonials">
+  <div class="container">
+    <h2 class="section-title"><span class="title-deco">◈</span> 来访者说 <span class="title-deco">◈</span></h2>
+    <div class="testimonials-slider">
+      <div class="testimonial-card active">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"第一次接触塔罗，杏子解读得非常详细，不是那种模棱两可的话，每一点都能对应到我实际的情况。感觉被看透了，很震撼。"</p>
+        <div class="testimonial-author">
+          <span class="author-name">小雅</span>
+          <span class="author-title">深圳 · 产品经理</span>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"做感情咨询的时候哭了，不是因为难过，而是因为终于有人说出了我一直在逃避的事实。杏子的专业和温柔让我很安心。"</p>
+        <div class="testimonial-author">
+          <span class="author-name">阿宁</span>
+          <span class="author-title">上海 · 自由职业</span>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"每年都找杏子看流年运势，每次都很准。去年说我会在秋季遇到重要的转变，果然换了工作，一切都对上了。"</p>
+        <div class="testimonial-author">
+          <span class="author-name">Maggie</span>
+          <span class="author-title">北京 · 设计师</span>
+        </div>
       </div>
     </div>
-  </footer>
+    <div class="slider-controls">
+      <button class="slider-btn active" data-index="0"></button>
+      <button class="slider-btn" data-index="1"></button>
+      <button class="slider-btn" data-index="2"></button>
+    </div>
+  </div>
+</section>
 
-  <script src="js/main.js"></script>
+<section class="section section-alt" id="blog">
+  <div class="container">
+    <h2 class="section-title"><span class="title-deco">◈</span> 塔罗随笔 <span class="title-deco">◈</span></h2>
+    <div class="blog-grid">
+      <article class="blog-card">
+        <div class="blog-image"><div class="blog-img-placeholder">🃏</div></div>
+        <div class="blog-body">
+          <span class="blog-date">2026.05.15</span>
+          <h3>愚人之旅：从零开始的勇气</h3>
+          <p>愚人牌是塔罗大阿尔卡纳的第一张牌，也是编号为0的一张。零代表着无限可能，代表着尚未被定义的状态...</p>
+          <a href="#" class="blog-link">阅读更多 →</a>
+        </div>
+      </article>
+      <article class="blog-card">
+        <div class="blog-image"><div class="blog-img-placeholder">🌙</div></div>
+        <div class="blog-body">
+          <span class="blog-date">2026.04.28</span>
+          <h3>女祭司：聆听内心的声音</h3>
+          <p>女祭司这张牌常常出现在我们需要向内看的时刻。她提醒我们，所有的答案都已经在你心里...</p>
+          <a href="#" class="blog-link">阅读更多 →</a>
+        </div>
+      </article>
+      <article class="blog-card">
+        <div class="blog-image"><div class="blog-img-placeholder">✨</div></div>
+        <div class="blog-body">
+          <span class="blog-date">2026.04.10</span>
+          <h3>如何为塔罗解读做准备？</h3>
+          <p>很多人第一次塔罗占卜时会紧张，不知道该怎么问问题。其实好的问题比好的牌阵更重要...</p>
+          <a href="#" class="blog-link">阅读更多 →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="container">
+    <h2 class="section-title"><span class="title-deco">◈</span> 联系我 <span class="title-deco">◈</span></h2>
+    <div class="contact-content">
+      <div class="contact-info">
+        <div class="contact-item">
+          <span class="contact-icon">📱</span>
+          <div>
+            <h4>微信</h4>
+            <p>Xingzi_Tarot</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">📧</span>
+          <div>
+            <h4>邮箱</h4>
+            <p>xingzi@xingzitarot.com</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">📱</span>
+          <div>
+            <h4>小红书</h4>
+            <p>@杏子塔罗</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">⏰</span>
+          <div>
+            <h4>在线时间</h4>
+            <p>每日 10:00 - 22:00</p>
+          </div>
+        </div>
+      </div>
+      <div class="contact-cta">
+        <div class="cta-card">
+          <p>预约占卜请加微信<br>备注"塔罗咨询"</p>
+          <div class="cta-qr-placeholder">
+            <span>✦</span>
+            <span>微信二维码</span>
+            <span>✦</span>
+          </div>
+          <p class="cta-note">首次咨询享 8 折优惠</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <p class="footer-brand">✦ 杏子塔罗</p>
+      <p class="footer-quote">"牌是镜子，答案在你心中"</p>
+      <p class="footer-copy">© 2026 杏子塔罗 · 用心照亮每一个迷茫的灵魂</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+const t=document.querySelector('.nav-toggle'),n=document.querySelector('.nav-menu');
+if(t){t.addEventListener('click',()=>{t.classList.toggle('active'),n.classList.toggle('active')});
+document.querySelectorAll('.nav-menu a').forEach(e=>e.addEventListener('click',()=>{t.classList.remove('active'),n.classList.remove('active')}))}
+window.addEventListener('scroll',()=>{document.querySelector('.navbar').classList.toggle('scrolled',window.scrollY>50)});
+const e=document.querySelectorAll('.testimonial-card'),o=document.querySelectorAll('.slider-btn');
+let s=0,a;
+function r(t){e.forEach(e=>e.classList.remove('active')),o.forEach(e=>e.classList.remove('active')),e[t].classList.add('active'),o[t].classList.add('active'),s=t}
+o.forEach(t=>{t.addEventListener('click',()=>{r(parseInt(t.dataset.index)),function(){clearInterval(a),a=setInterval(()=>{r((s+1)%e.length)},5e3)}()})});
+if(e.length>0){a=setInterval(()=>{r((s+1)%e.length)},5e3)}
+const c=document.querySelectorAll('.section'),i=new IntersectionObserver(t=>{t.forEach(t=>{t.isIntersecting&&t.target.classList.add('visible')})},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+c.forEach(t=>{i.observe(t)});
+const l=document.getElementById('floating'),sym=['☽','✦','◇','🃏','🌿','🌸'];
+function u(){l.innerHTML='';const t=window.innerWidth<768?15:30;for(let e=0;e<t;e++){const t=document.createElement('div');t.className='floating-el';t.textContent=sym[Math.floor(Math.random()*sym.length)];const o=Math.random()*100,s=10+Math.random()*20,r=10+Math.random()*25;t.style.left=o+'%',t.style.fontSize=s+'px',t.style.animationDuration=r+'s',t.style.animationDelay=-Math.random()*r+'s',l.appendChild(t)}}u(),window.addEventListener('resize',u)});
+</script>
 </body>
 </html>
